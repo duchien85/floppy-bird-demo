@@ -15,7 +15,7 @@ public class SuperMarioTutorial extends Game
     public void create()
     {
         instance = this;
-        setScreen(new SplashScreen());
+        setScreen(new GameScreen());
     }
 
     @Override
