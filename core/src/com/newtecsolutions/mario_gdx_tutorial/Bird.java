@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -15,6 +16,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Bird
 {
+    private static final float BIRD_INIT_X = 3;
+    private static final float BIRD_INIT_Y = 5;
     private static final float GRAVITY = -0.7f;
     private static final float MAX_VELOCITY = 0.5f;
 
@@ -27,9 +30,13 @@ public class Bird
     private Vector2 velocity;
     private float rotation;
 
-    public Bird(float x, float y)
+    private Rectangle bounds = new Rectangle();
+    private float height;
+    private float width;
+
+    public Bird()
     {
-        position = new Vector2(x, y);
+        position = new Vector2(BIRD_INIT_X, BIRD_INIT_Y);
         acceleration = new Vector2();
         velocity = new Vector2();
 
@@ -41,8 +48,8 @@ public class Bird
     public void render(SpriteBatch batch)
     {
         TextureRegion region = animation.getKeyFrame(stateTime);
-        float height = 0.5f;
-        float width = height * region.getRegionWidth() / region.getRegionHeight();
+        height = 0.5f;
+        width = height * region.getRegionWidth() / region.getRegionHeight();
         batch.draw(region, position.x, position.y, width / 2, height / 2, width, height, 1, 1, rotation);
     }
 
@@ -78,5 +85,18 @@ public class Bird
     public void jump()
     {
         velocity.set(0, 0.17f);
+    }
+
+    public Rectangle getBounds()
+    {
+        bounds.set(position.x, position.y, width, height);
+        return bounds;
+    }
+
+    public void reset()
+    {
+        position.set(BIRD_INIT_X, BIRD_INIT_Y);
+        velocity.set(0, 0);
+        rotation = 0;
     }
 }

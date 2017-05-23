@@ -5,7 +5,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
 /**
@@ -26,6 +29,20 @@ public class GameScreen implements Screen, InputProcessor
 
     private Array<Pipe> pipes = new Array<Pipe>();
 
+    private enum GameState
+    {
+        Idle, Running, Paused, GameOver
+    }
+
+    private GameState gameState = GameState.Idle;
+
+    private Texture gameOver;
+    private float gameOverWidth, gameOverHeight;
+
+    private Texture replay;
+    private float replayWidth, replayHeight;
+    private Rectangle replayBounds = new Rectangle();
+
     @Override
     public void show()
     {
@@ -33,9 +50,19 @@ public class GameScreen implements Screen, InputProcessor
 
         setupCamera();
 
-        bird = new Bird(3, 5);
+        bird = new Bird();
 
         background = new Background(camera.viewportWidth, camera.viewportHeight);
+
+        gameOver = new Texture(Gdx.files.internal("game_over.png"));
+
+        gameOverHeight = camera.viewportHeight * 0.25f;
+        gameOverWidth = gameOverHeight * ((float)gameOver.getWidth() / (float)gameOver.getHeight());
+
+        replay = new Texture(Gdx.files.internal("replay.png"));
+
+        replayHeight = camera.viewportHeight * 0.1f;
+        replayWidth = replayHeight * ((float)replay.getWidth() / (float)replay.getHeight());
 
         Gdx.input.setInputProcessor(this);
     }
@@ -60,40 +87,94 @@ public class GameScreen implements Screen, InputProcessor
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         background.render(batch);
-        background.update(delta);
 
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
 
-        bird.render(batch);
         for(Pipe pipe : pipes)
         {
             pipe.render(batch);
         }
+        bird.render(batch);
+
+        if(gameState == GameState.GameOver)
+        {
+            float gameOverY = camera.position.y - gameOverHeight * 0.5f;
+            batch.draw(gameOver, camera.position.x - gameOverWidth * 0.5f, gameOverY, gameOverWidth, gameOverHeight);
+            replayBounds.set(camera.position.x - replayWidth * 0.5f, gameOverY - replayHeight, replayWidth, replayHeight);
+            batch.draw(replay, replayBounds.x, replayBounds.y, replayBounds.width, replayBounds.height);
+        }
 
         batch.end();
 
-        bird.update(delta);
+        update(delta);
+    }
 
-        bird.position.x += delta;
-        camera.position.x += delta;
+    private void update(float delta)
+    {
+        if(gameState == GameState.Running)
+        {
+            bird.update(delta);
+            background.update(delta);
+            bird.position.x += delta;
+            camera.position.x += delta;
+            camera.update();
+
+            addPipes();
+
+            detectCollision();
+        }
+    }
+
+    private void detectCollision()
+    {
+        if(bird.position.y + 0.5f < 0 || bird.position.y > camera.viewportHeight)
+            die();
+        for(Pipe pipe : pipes)
+        {
+            if(pipe.bounds.overlaps(bird.getBounds()))
+                die();
+        }
+    }
+
+    private void die()
+    {
+        gameState = GameState.GameOver;
+    }
+
+    private void restart()
+    {
+        pipes.clear();
+        bird.reset();
+        camera.position.x = camera.viewportWidth * 0.5f;
         camera.update();
-
-        addPipes();
+        gameState = GameState.Idle;
     }
 
     private void addPipes()
     {
-        /*while(pipes.size == 0 || pipes.get(pipes.size - 1).bounds.x < camera.position.x + camera.viewportWidth * 0.5f)
+        while(pipes.size == 0 || pipes.get(pipes.size - 1).bounds.x < camera.position.x + camera.viewportWidth * 0.5f)
         {
+            float gapHeight = MathUtils.random(2, 3);
+            float gapStart = MathUtils.random(3, 6);
+            float x;
             if(pipes.size == 0)
             {
-                Pipe pipe = new Pipe(7)
+                x = 7;
             }
-            Pipe last = pipes.get(pipes.size - 1);
+            else
+            {
+                Pipe last = pipes.get(pipes.size - 1);
 
-            Pipe pipe = new Pipe()
-        }*/
+                x = last.bounds.x + last.bounds.width + MathUtils.random(1.5f, 3f);
+
+            }
+            float totalHeight = camera.viewportHeight;
+            Pipe pipeBottom = new Pipe(x, 0, gapStart, false);
+            Pipe pipeTop = new Pipe(x, gapStart + gapHeight, totalHeight - (gapStart + gapHeight), true);
+            pipes.add(pipeBottom);
+            pipes.add(pipeTop);
+        }
     }
 
     @Override
@@ -153,7 +234,23 @@ public class GameScreen implements Screen, InputProcessor
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button)
     {
-        bird.jump();
+        screenY = Gdx.graphics.getHeight() - screenY;//invert y
+
+        float x = (camera.position.x - camera.viewportWidth * 0.5f) + ((float)screenX / ((float)Gdx.graphics.getWidth() / camera.viewportWidth));
+        float y = ((float)screenY / ((float)Gdx.graphics.getHeight() / camera.viewportHeight));
+
+        if(gameState == GameState.Idle)
+        {
+            gameState = GameState.Running;
+        }
+        else if(gameState == GameState.GameOver && replayBounds.contains(x, y))
+        {
+            restart();
+        }
+        else if(gameState == GameState.Running)
+        {
+            bird.jump();
+        }
         return false;
     }
 
