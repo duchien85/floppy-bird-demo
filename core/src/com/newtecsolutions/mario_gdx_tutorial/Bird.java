@@ -18,7 +18,7 @@ public class Bird
 {
     private static final float BIRD_INIT_X = 3;
     private static final float BIRD_INIT_Y = 5;
-    private static final float GRAVITY = -0.7f;
+    private static final float GRAVITY = -0.5f;
     private static final float MAX_VELOCITY = 0.5f;
 
     private TextureAtlas atlas;
@@ -84,7 +84,7 @@ public class Bird
 
     public void jump()
     {
-        velocity.set(0, 0.17f);
+        velocity.set(0, 0.13f);
     }
 
     public Rectangle getBounds()
