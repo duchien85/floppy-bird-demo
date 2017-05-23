@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Background
 {
-    private static final float BACKGROUND_SPEED = 1;
+    private static final float BACKGROUND_SPEED = 0.5f;
     private static final Color BACKGROUND_COLOR = new Color(0.305882353f, 0.752941176f, 0.792156863f, 1);
     private OrthographicCamera camera;
     private ShapeRenderer shapeRenderer;
