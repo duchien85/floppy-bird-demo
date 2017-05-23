@@ -15,12 +15,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class SplashScreen implements Screen
 {
+    private static final float SPLASH_TIME = 2;
     private SpriteBatch batch;
     private Texture img;
 
     private OrthographicCamera camera;
 
     private float logoWidth, logoHeight;
+
+    private float stateTime;
 
     @Override
     public void show()
@@ -49,6 +52,10 @@ public class SplashScreen implements Screen
     @Override
     public void render(float delta)
     {
+        if(stateTime >= SPLASH_TIME)
+        {
+            SuperMarioTutorial.getInstance().setScreen(new GameScreen());
+        }
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -56,6 +63,8 @@ public class SplashScreen implements Screen
         batch.begin();
         batch.draw(img, camera.position.x - logoWidth * 0.5f, camera.position.y - logoHeight * 0.5f, logoWidth, logoHeight);
         batch.end();
+
+        stateTime += delta;
     }
 
     @Override
