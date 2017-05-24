@@ -46,4 +46,9 @@ public class Pipe
             Utility.draw(batch, head, bounds.x, bounds.y + pipeHeight, headHeight);
         }
     }
+
+    public boolean isTop()
+    {
+        return isTop;
+    }
 }

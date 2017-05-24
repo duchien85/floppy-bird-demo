@@ -99,6 +99,8 @@ public class GameScreen implements Screen, InputProcessor
     @Override
     public void render(float delta)
     {
+        if(delta > 0.016f)
+            delta = 0.016f;
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -133,6 +135,42 @@ public class GameScreen implements Screen, InputProcessor
         batch.end();
 
         update(delta);
+
+        autoPilot();
+    }
+
+    private void autoPilot()
+    {
+        if(gameState != GameState.Running)
+            return;
+        Pipe closestBottomPipe = getClosestBottomPipe();
+        if(closestBottomPipe == null)
+            return;
+
+        if(bird.position.y <= 0.2f + closestBottomPipe.bounds.y + closestBottomPipe.bounds.height)
+            bird.jump();
+    }
+
+    private Pipe getClosestBottomPipe()
+    {
+        float minDistance = Float.MAX_VALUE;
+        Pipe closestPipe = null;
+        for(int i = pipes.size - 1; i >= 0; i--)
+        {
+            Pipe pipe = pipes.get(i);
+            if(pipe.bounds.x + pipe.bounds.width < bird.position.x)
+                break;
+            if(!pipe.isTop())
+            {
+                float distance = (pipe.bounds.x + pipe.bounds.width) - bird.position.x;
+                if(distance < minDistance)
+                {
+                    minDistance = distance;
+                    closestPipe = pipe;
+                }
+            }
+        }
+        return closestPipe;
     }
 
     private void drawScore(float y, int score)
