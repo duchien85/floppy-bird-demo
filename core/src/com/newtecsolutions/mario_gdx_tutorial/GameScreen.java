@@ -153,7 +153,7 @@ public class GameScreen implements Screen, InputProcessor
     {
         while(pipes.size == 0 || pipes.get(pipes.size - 1).bounds.x < camera.position.x + camera.viewportWidth * 0.5f)
         {
-            float gapHeight = MathUtils.random(2, 3);
+            float gapHeight = MathUtils.random(2.5f, 3);
             float gapStart = MathUtils.random(3, 6);
             float x;
             if(pipes.size == 0)
