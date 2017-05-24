@@ -141,7 +141,8 @@ public class GameScreen implements Screen, InputProcessor
         float offset = 0.5f;
         for(char scoreChar : strScore.toCharArray())
         {
-            Utility.draw(batch, fontTextures[Character.getNumericValue(scoreChar)], offset, y, 1);
+            int index = ('0' <= scoreChar && scoreChar <= '9') ? scoreChar - '0' : scoreChar - 'A' + 10;
+            Utility.draw(batch, fontTextures[index], offset, y, 1);
             offset += 0.6;
         }
     }
