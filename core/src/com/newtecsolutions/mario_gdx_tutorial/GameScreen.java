@@ -21,13 +21,14 @@ public class GameScreen implements Screen, InputProcessor
 {
     private SpriteBatch batch;
 
-    private OrthographicCamera camera;
+    private OrthographicCamera camera, hudCamera;
 
     private Bird bird;
 
     private Background background;
 
     private Array<Pipe> pipes = new Array<Pipe>();
+    private Array<ScoreColider> scoreColiders = new Array<ScoreColider>();
 
     private enum GameState
     {
@@ -43,12 +44,20 @@ public class GameScreen implements Screen, InputProcessor
     private float replayWidth, replayHeight;
     private Rectangle replayBounds = new Rectangle();
 
+    private int score = 0;
+
+    private Texture[] fontTextures = new Texture[10];
+
     @Override
     public void show()
     {
         batch = new SpriteBatch();
 
         setupCamera();
+
+        hudCamera = new OrthographicCamera();
+        hudCamera.setToOrtho(false, camera.viewportWidth, camera.viewportHeight);
+        hudCamera.update();
 
         bird = new Bird();
 
@@ -65,6 +74,11 @@ public class GameScreen implements Screen, InputProcessor
         replayWidth = replayHeight * ((float)replay.getWidth() / (float)replay.getHeight());
 
         Gdx.input.setInputProcessor(this);
+
+        for(int i = 0; i < fontTextures.length; i++)
+        {
+            fontTextures[i] = new Texture("font_big_" + i + ".png");
+        }
     }
 
     private void setupCamera()
@@ -105,6 +119,20 @@ public class GameScreen implements Screen, InputProcessor
 
         batch.end();
 
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+
+        //draw score
+        String strScore = String.valueOf(score);
+        float offset = 0.5f;
+        for(char scoreChar : strScore.toCharArray())
+        {
+            Utility.draw(batch, fontTextures[Character.getNumericValue(scoreChar)], offset, 0.5f, 1);
+            offset += 0.6;
+        }
+
+        batch.end();
+
         update(delta);
     }
 
@@ -133,6 +161,14 @@ public class GameScreen implements Screen, InputProcessor
             if(pipe.bounds.overlaps(bird.getBounds()))
                 die();
         }
+        for(ScoreColider scoreColider : scoreColiders)
+        {
+            if(!scoreColider.alreadyChecked && scoreColider.bounds.overlaps(bird.getBounds()))
+            {
+                scoreColider.alreadyChecked = true;
+                score++;
+            }
+        }
     }
 
     private void die()
@@ -147,6 +183,7 @@ public class GameScreen implements Screen, InputProcessor
         camera.position.x = camera.viewportWidth * 0.5f;
         camera.update();
         gameState = GameState.Idle;
+        score = 0;
     }
 
     private void addPipes()
@@ -170,6 +207,8 @@ public class GameScreen implements Screen, InputProcessor
             float totalHeight = camera.viewportHeight;
             Pipe pipeBottom = new Pipe(x, 0, gapStart, false);
             Pipe pipeTop = new Pipe(x, gapStart + gapHeight, totalHeight - (gapStart + gapHeight), true);
+            ScoreColider scoreColider = new ScoreColider(x, gapStart, gapHeight);
+            scoreColiders.add(scoreColider);
             pipes.add(pipeBottom);
             pipes.add(pipeTop);
         }
