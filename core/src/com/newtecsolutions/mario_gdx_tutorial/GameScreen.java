@@ -2,6 +2,7 @@ package com.newtecsolutions.mario_gdx_tutorial;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -19,6 +20,9 @@ import com.badlogic.gdx.utils.Array;
 
 public class GameScreen implements Screen, InputProcessor
 {
+    public static final Preferences prefs = Gdx.app.getPreferences("main_prefs");
+    private static final String HIGH_SCORE_KEY = "high_score";
+
     private SpriteBatch batch;
 
     private OrthographicCamera camera, hudCamera;
@@ -123,17 +127,23 @@ public class GameScreen implements Screen, InputProcessor
         batch.begin();
 
         //draw score
-        String strScore = String.valueOf(score);
-        float offset = 0.5f;
-        for(char scoreChar : strScore.toCharArray())
-        {
-            Utility.draw(batch, fontTextures[Character.getNumericValue(scoreChar)], offset, 0.5f, 1);
-            offset += 0.6;
-        }
+        drawScore(0.5f, score);
+        drawScore(1.7f, prefs.getInteger(HIGH_SCORE_KEY));
 
         batch.end();
 
         update(delta);
+    }
+
+    private void drawScore(float y, int score)
+    {
+        String strScore = String.valueOf(score);
+        float offset = 0.5f;
+        for(char scoreChar : strScore.toCharArray())
+        {
+            Utility.draw(batch, fontTextures[Character.getNumericValue(scoreChar)], offset, y, 1);
+            offset += 0.6;
+        }
     }
 
     private void update(float delta)
@@ -179,11 +189,23 @@ public class GameScreen implements Screen, InputProcessor
     private void restart()
     {
         pipes.clear();
+        scoreColiders.clear();
         bird.reset();
         camera.position.x = camera.viewportWidth * 0.5f;
         camera.update();
         gameState = GameState.Idle;
+        setHighScore();
         score = 0;
+    }
+
+    private void setHighScore()
+    {
+        int highScore = prefs.getInteger(HIGH_SCORE_KEY);
+        if(score > highScore)
+        {
+            prefs.putInteger(HIGH_SCORE_KEY, score);
+            prefs.flush();
+        }
     }
 
     private void addPipes()
@@ -242,6 +264,11 @@ public class GameScreen implements Screen, InputProcessor
     public void dispose()
     {
         bird.dispose();
+        for(Texture texture : fontTextures)
+            texture.dispose();
+        gameOver.dispose();
+        replay.dispose();
+        setHighScore();
     }
 
     @Override
