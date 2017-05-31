@@ -26,6 +26,7 @@ import java.util.Iterator;
 
 public class GameScreen implements Screen, InputProcessor
 {
+    private static final float UPDATE_DEBUG_TEXT_INTERVAL = 1;
     public static final Preferences prefs = Gdx.app.getPreferences("main_prefs");
     private static final String HIGH_SCORE_KEY = "high_score";
 
@@ -77,6 +78,10 @@ public class GameScreen implements Screen, InputProcessor
     private BitmapFont debugFont;
 
     private TextureRegion[] fontRegions = new TextureRegion[10];
+
+    private float stateTime;
+    private float lastDebugDrawTime;
+    private String debugMessage;
 
     @Override
     public void show()
@@ -133,6 +138,7 @@ public class GameScreen implements Screen, InputProcessor
     {
         if(delta > 0.016f)
             delta = 0.016f;
+        stateTime += delta;
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -181,7 +187,11 @@ public class GameScreen implements Screen, InputProcessor
 
     private void drawDebugText()
     {
-        String debugMessage = generateDebugMessage();
+        if(debugMessage == null || stateTime - lastDebugDrawTime > UPDATE_DEBUG_TEXT_INTERVAL)
+        {
+            debugMessage = generateDebugMessage();
+            lastDebugDrawTime = stateTime;
+        }
         debugFont.draw(batch, debugMessage, 0.5f, hudCamera.viewportHeight - 0.5f);
     }
 
