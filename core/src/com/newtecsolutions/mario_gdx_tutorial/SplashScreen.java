@@ -54,7 +54,7 @@ public class SplashScreen implements Screen
     {
         if(stateTime >= SPLASH_TIME)
         {
-            SuperMarioTutorial.getInstance().setScreen(new GameScreen());
+            FlappyBirdGame.getInstance().setScreen(new GameScreen());
         }
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);

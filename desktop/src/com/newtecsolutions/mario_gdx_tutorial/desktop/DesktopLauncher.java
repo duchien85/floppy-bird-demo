@@ -2,7 +2,7 @@ package com.newtecsolutions.mario_gdx_tutorial.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.newtecsolutions.mario_gdx_tutorial.SuperMarioTutorial;
+import com.newtecsolutions.mario_gdx_tutorial.FlappyBirdGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -10,6 +10,6 @@ public class DesktopLauncher {
 		config.width = 960;
 		config.height = 540;
 		config.allowSoftwareMode = false;
-		new LwjglApplication(new SuperMarioTutorial(), config);
+		new LwjglApplication(new FlappyBirdGame(), config);
 	}
 }

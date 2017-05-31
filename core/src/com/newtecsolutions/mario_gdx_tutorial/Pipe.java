@@ -1,9 +1,8 @@
 package com.newtecsolutions.mario_gdx_tutorial;
 
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -18,19 +17,16 @@ public class Pipe
 
     public Rectangle bounds = new Rectangle();
 
-    private Texture pipe, head;
+    private TextureRegion pipe, head;
     private float headHeight, pipeHeight;
     private boolean isTop;
 
     public Pipe(float x, float y, float height, boolean isTop)
     {
         this.isTop = isTop;
-        bounds.set(x, y, WIDTH, height);
-        pipe = new Texture(Gdx.files.internal("pipe.png"));
-        head = new Texture(Gdx.files.internal(isTop ? "pipe_down.png" : "pipe_up.png"));
-
-        headHeight = WIDTH / ((float)head.getWidth() / (float)head.getHeight());
-        pipeHeight = height - headHeight;
+        pipe = FlappyBirdGame.getInstance().getAssets().findRegion("pipe");
+        head = FlappyBirdGame.getInstance().getAssets().findRegion(isTop ? "pipe_down" : "pipe_up");
+        updateBounds(x, y, height, isTop);
     }
 
     public void render(SpriteBatch batch)
@@ -45,6 +41,15 @@ public class Pipe
             batch.draw(pipe, bounds.x, bounds.y, Utility.getWidth(head, headHeight), pipeHeight);
             Utility.draw(batch, head, bounds.x, bounds.y + pipeHeight, headHeight);
         }
+    }
+
+    public void updateBounds(float x, float y, float height, boolean isTop)
+    {
+        head = FlappyBirdGame.getInstance().getAssets().findRegion(isTop ? "pipe_down" : "pipe_up");
+        headHeight = WIDTH / ((float)head.getRegionWidth() / (float)head.getRegionHeight());
+        pipeHeight = height - headHeight;
+        bounds.set(x, y, WIDTH, height);
+        this.isTop = isTop;
     }
 
     public boolean isTop()

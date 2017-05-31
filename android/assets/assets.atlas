@@ -1,0 +1,160 @@
+
+assets.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+bird
+  rotate: false
+  xy: 393, 151
+  size: 34, 24
+  orig: 34, 24
+  offset: 0, 0
+  index: 1
+bird
+  rotate: false
+  xy: 325, 39
+  size: 34, 24
+  orig: 34, 24
+  offset: 0, 0
+  index: 2
+bird
+  rotate: false
+  xy: 325, 39
+  size: 34, 24
+  orig: 34, 24
+  offset: 0, 0
+  index: 4
+bird
+  rotate: false
+  xy: 361, 39
+  size: 34, 24
+  orig: 34, 24
+  offset: 0, 0
+  index: 3
+ceiling
+  rotate: false
+  xy: 259, 47
+  size: 64, 16
+  orig: 64, 16
+  offset: 0, 0
+  index: -1
+font_big
+  rotate: false
+  xy: 259, 9
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 0
+font_big
+  rotate: false
+  xy: 456, 183
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 1
+font_big
+  rotate: false
+  xy: 285, 9
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 2
+font_big
+  rotate: false
+  xy: 482, 183
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 3
+font_big
+  rotate: false
+  xy: 429, 139
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 4
+font_big
+  rotate: false
+  xy: 397, 27
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 5
+font_big
+  rotate: false
+  xy: 423, 27
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 6
+font_big
+  rotate: false
+  xy: 449, 27
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 7
+font_big
+  rotate: false
+  xy: 475, 27
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 8
+font_big
+  rotate: false
+  xy: 311, 1
+  size: 24, 36
+  orig: 24, 36
+  offset: 0, 0
+  index: 9
+game_over
+  rotate: false
+  xy: 259, 65
+  size: 236, 68
+  orig: 236, 68
+  offset: 0, 0
+  index: -1
+land
+  rotate: false
+  xy: 1, 135
+  size: 336, 112
+  orig: 336, 112
+  offset: 0, 0
+  index: -1
+pipe
+  rotate: false
+  xy: 1, 2
+  size: 52, 1
+  orig: 52, 1
+  offset: 0, 0
+  index: -1
+pipe_down
+  rotate: false
+  xy: 339, 149
+  size: 52, 26
+  orig: 52, 26
+  offset: 0, 0
+  index: -1
+pipe_up
+  rotate: false
+  xy: 456, 221
+  size: 52, 26
+  orig: 52, 26
+  offset: 0, 0
+  index: -1
+replay
+  rotate: false
+  xy: 339, 177
+  size: 115, 70
+  orig: 115, 70
+  offset: 0, 0
+  index: -1
+sky
+  rotate: false
+  xy: 1, 5
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1

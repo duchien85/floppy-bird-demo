@@ -20,4 +20,9 @@ public class ScoreColider
     {
         bounds.set(x, y, WIDTH, height);
     }
+
+    public void updateBounds(float x, float y, float height)
+    {
+        bounds.set(x, y, WIDTH, height);
+    }
 }

@@ -1,6 +1,5 @@
 package com.newtecsolutions.mario_gdx_tutorial;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -21,13 +20,12 @@ public class Bird
     private static final float GRAVITY = -0.5f;
     private static final float MAX_VELOCITY = 0.5f;
 
-    private TextureAtlas atlas;
     private Animation<TextureAtlas.AtlasRegion> animation;
     private float stateTime;
 
     public Vector2 position;
     private Vector2 acceleration;
-    private Vector2 velocity;
+    public Vector2 velocity;
     private float rotation;
 
     private Rectangle bounds = new Rectangle();
@@ -40,8 +38,12 @@ public class Bird
         acceleration = new Vector2();
         velocity = new Vector2();
 
-        atlas = new TextureAtlas(Gdx.files.internal("bird.atlas"));
-        animation = new Animation<TextureAtlas.AtlasRegion>(0.075f, atlas.getRegions());
+        TextureAtlas.AtlasRegion[] regions = new TextureAtlas.AtlasRegion[4];
+        regions[0] = FlappyBirdGame.getInstance().getAssets().findRegion("bird", 1);
+        regions[1] = FlappyBirdGame.getInstance().getAssets().findRegion("bird", 2);
+        regions[2] = FlappyBirdGame.getInstance().getAssets().findRegion("bird", 3);
+        regions[3] = FlappyBirdGame.getInstance().getAssets().findRegion("bird", 4);
+        animation = new Animation<TextureAtlas.AtlasRegion>(0.075f, regions);
         animation.setPlayMode(Animation.PlayMode.LOOP);
     }
 
@@ -75,11 +77,6 @@ public class Bird
         position.add(velocity);
 
         stateTime += delta;
-    }
-
-    public void dispose()
-    {
-        atlas.dispose();
     }
 
     public void jump()
