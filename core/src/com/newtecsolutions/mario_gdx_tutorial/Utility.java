@@ -1,5 +1,7 @@
 package com.newtecsolutions.mario_gdx_tutorial;
 
+import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -30,5 +32,9 @@ public class Utility
     public static float getWidth(Texture texture, float height)
     {
         return height * texture.getWidth() / texture.getHeight();
+    }
+
+    public static boolean isPortrait() {
+        return Gdx.graphics.getWidth() < Gdx.graphics.getHeight();
     }
 }

@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Bird
 {
     private static final float BIRD_INIT_X = 3;
-    private static final float BIRD_INIT_Y = 5;
+    private static final float BIRD_INIT_Y = Utility.isPortrait() ? 9 : 5;
     private static final float GRAVITY = -0.5f;
     private static final float MAX_VELOCITY = 0.5f;
 

@@ -1,5 +1,6 @@
 package com.newtecsolutions.mario_gdx_tutorial;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Preferences;
@@ -27,8 +28,6 @@ import java.util.Iterator;
 public class GameScreen implements Screen, InputProcessor
 {
     private static final float UPDATE_DEBUG_TEXT_INTERVAL = 1;
-    public static final Preferences prefs = Gdx.app.getPreferences("main_prefs");
-    private static final String HIGH_SCORE_KEY = "high_score";
 
     private SpriteBatch batch;
 
@@ -101,8 +100,14 @@ public class GameScreen implements Screen, InputProcessor
 
         gameOver = FlappyBirdGame.getInstance().getAssets().findRegion("game_over");
 
-        gameOverHeight = camera.viewportHeight * 0.25f;
-        gameOverWidth = gameOverHeight * ((float)gameOver.getRegionWidth() / (float)gameOver.getRegionHeight());
+        if (isPortrait()) {
+            gameOverWidth = camera.viewportWidth * 0.75f;
+            gameOverHeight = gameOverWidth / ((float)gameOver.getRegionWidth() / (float)gameOver.getRegionHeight());
+        }
+        else {
+            gameOverHeight = camera.viewportHeight * 0.25f;
+            gameOverWidth = gameOverHeight * ((float)gameOver.getRegionWidth() / (float)gameOver.getRegionHeight());
+        }
 
         replay = FlappyBirdGame.getInstance().getAssets().findRegion("replay");
 
@@ -126,11 +131,25 @@ public class GameScreen implements Screen, InputProcessor
     {
         if(camera == null)
             camera = new OrthographicCamera();
-        final float cameraWidth = 16;
-        final float cameraHeight = cameraWidth / ((float) Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight());
+        float cameraHeight;
+        float cameraWidth;
+
+        if(isPortrait())
+        {
+            cameraWidth = 8;
+        }
+        else
+        {
+            cameraWidth = 16;
+        }
+        cameraHeight = cameraWidth / ((float) Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight());
 
         camera.setToOrtho(false, cameraWidth, cameraHeight);
         camera.update();
+    }
+
+    private boolean isPortrait() {
+        return Utility.isPortrait();
     }
 
     @Override
@@ -167,8 +186,7 @@ public class GameScreen implements Screen, InputProcessor
         batch.begin();
 
         //draw score
-        drawScore(0.5f, score);
-        drawScore(1.7f, prefs.getInteger(HIGH_SCORE_KEY));
+        drawScore(score);
 
         batch.end();
 
@@ -187,6 +205,8 @@ public class GameScreen implements Screen, InputProcessor
 
     private void drawDebugText()
     {
+        if(!Debug.DEBUG)
+            return;
         if(debugMessage == null || stateTime - lastDebugDrawTime > UPDATE_DEBUG_TEXT_INTERVAL)
         {
             debugMessage = generateDebugMessage();
@@ -246,15 +266,26 @@ public class GameScreen implements Screen, InputProcessor
         return closestPipe;
     }
 
-    private void drawScore(float y, int score)
+    private void drawScore(int score)
     {
         String strScore = String.valueOf(score);
-        float offset = 0.5f;
-        for(char scoreChar : strScore.toCharArray())
+        char[] chars = strScore.toCharArray();
+
+        float charHeight = 1;
+        float charWidth = charHeight * fontRegions[0].getRegionWidth()/fontRegions[0].getRegionHeight();
+
+        float spaceWidth = 0.6f;
+
+        float width = charWidth * chars.length + spaceWidth * (chars.length - 1);
+
+        float offset = hudCamera.viewportWidth / 2 - width / 2;
+
+        for(int i = 0; i < chars.length; i++)
         {
+            char scoreChar = chars[i];
             int index = ('0' <= scoreChar && scoreChar <= '9') ? scoreChar - '0' : scoreChar - 'A' + 10;
-            Utility.draw(batch, fontRegions[index], offset, y, 1);
-            offset += 0.6;
+            batch.draw(fontRegions[index], offset, hudCamera.viewportHeight * 0.7f, charWidth, charHeight);
+            offset += spaceWidth;
         }
     }
 
@@ -296,6 +327,7 @@ public class GameScreen implements Screen, InputProcessor
             if(scoreColider.bounds.x < bird.position.x)
             {
                 iterator.remove();
+                scoreColider.alreadyChecked = false;
                 colliderPool.free(scoreColider);
                 continue;
             }
@@ -320,18 +352,7 @@ public class GameScreen implements Screen, InputProcessor
         camera.position.x = camera.viewportWidth * 0.5f;
         camera.update();
         gameState = GameState.Idle;
-        setHighScore();
         score = 0;
-    }
-
-    private void setHighScore()
-    {
-        int highScore = prefs.getInteger(HIGH_SCORE_KEY);
-        if(score > highScore)
-        {
-            prefs.putInteger(HIGH_SCORE_KEY, score);
-            prefs.flush();
-        }
     }
 
     private void addPipes()
@@ -339,7 +360,7 @@ public class GameScreen implements Screen, InputProcessor
         while(pipes.size == 0 || pipes.get(pipes.size - 1).bounds.x < camera.position.x + camera.viewportWidth * 0.5f)
         {
             float gapHeight = MathUtils.random(2.5f, 3);
-            float gapStart = MathUtils.random(3, 6);
+            float gapStart = isPortrait() ? MathUtils.random(6, 9) : MathUtils.random(3, 6);
             float x;
             if(pipes.size == 0)
             {
@@ -392,7 +413,6 @@ public class GameScreen implements Screen, InputProcessor
     @Override
     public void dispose()
     {
-        setHighScore();
         GLProfiler.disable();
     }
 

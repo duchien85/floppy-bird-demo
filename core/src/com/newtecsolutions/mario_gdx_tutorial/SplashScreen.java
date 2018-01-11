@@ -13,8 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * Copyright © 2017 ${OWNER}
  */
 
-public class SplashScreen implements Screen
-{
+public class SplashScreen implements Screen {
     private static final float SPLASH_TIME = 2;
     private SpriteBatch batch;
     private Texture img;
@@ -26,34 +25,33 @@ public class SplashScreen implements Screen
     private float stateTime;
 
     @Override
-    public void show()
-    {
+    public void show() {
         batch = new SpriteBatch();
         img = new Texture("libgdx.jpg");
         img.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
         setupCamera();
 
-        logoWidth = 10;
-        logoHeight = logoWidth / ((float)img.getWidth() / (float)img.getHeight());
+        if (Utility.isPortrait()) {
+            logoWidth = camera.viewportWidth;
+            logoHeight = logoWidth / ((float) img.getWidth() / (float) img.getHeight());
+        } else {
+            logoHeight = camera.viewportHeight * .5f;
+            logoWidth = logoWidth * ((float) img.getWidth() / (float) img.getHeight());
+        }
     }
 
-    private void setupCamera()
-    {
-        if(camera == null)
+    private void setupCamera() {
+        if (camera == null)
             camera = new OrthographicCamera();
-        final float cameraWidth = 16;
-        final float cameraHeight = cameraWidth / ((float)Gdx.graphics.getWidth() / (float)Gdx.graphics.getHeight());
 
-        camera.setToOrtho(false, cameraWidth, cameraHeight);
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.update();
     }
 
     @Override
-    public void render(float delta)
-    {
-        if(stateTime >= SPLASH_TIME)
-        {
+    public void render(float delta) {
+        if (stateTime >= SPLASH_TIME) {
             FlappyBirdGame.getInstance().setScreen(new GameScreen());
         }
         Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -68,32 +66,27 @@ public class SplashScreen implements Screen
     }
 
     @Override
-    public void resize(int width, int height)
-    {
+    public void resize(int width, int height) {
         setupCamera();
     }
 
     @Override
-    public void pause()
-    {
+    public void pause() {
 
     }
 
     @Override
-    public void resume()
-    {
+    public void resume() {
 
     }
 
     @Override
-    public void hide()
-    {
+    public void hide() {
 
     }
 
     @Override
-    public void dispose()
-    {
+    public void dispose() {
         batch.dispose();
         img.dispose();
     }
