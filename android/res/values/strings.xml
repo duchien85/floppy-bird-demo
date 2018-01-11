@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">mario_gdx_tutorial</string>
+    <string name="app_name">Flappy Bird -libgdx</string>
 
 </resources>
