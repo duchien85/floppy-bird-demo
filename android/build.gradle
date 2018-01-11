@@ -18,7 +18,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.newtecsolutions.mario_gdx_tutorial"
+        applicationId "org.skynetsoftware.flappybird"
         minSdkVersion 9
         targetSdkVersion 25
     }
@@ -71,7 +71,7 @@ task run(type: Exec) {
     }
 
     def adb = path + "/platform-tools/adb"
-    commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.newtecsolutions.mario_gdx_tutorial/com.newtecsolutions.mario_gdx_tutorial.AndroidLauncher'
+    commandLine "$adb", 'shell', 'am', 'start', '-n', 'org.skynetsoftware.flappybird/AndroidLauncher'
 }
 
 // sets up the Android Eclipse project, using the old Ant based build.
