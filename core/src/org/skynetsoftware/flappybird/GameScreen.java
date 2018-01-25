@@ -232,7 +232,7 @@ public class GameScreen implements Screen, InputProcessor
 
     private void autoPilot()
     {
-        if(gameState != GameState.Running)
+        if(gameState != GameState.Running || !Debug.DEBUG)
             return;
         Pipe closestBottomPipe = getClosestBottomPipe();
         if(closestBottomPipe == null)
